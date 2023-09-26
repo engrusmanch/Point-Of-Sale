@@ -2,9 +2,12 @@ import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:get/get.dart';
+import 'package:point_of_sale/core/constants/strings.dart';
 import 'package:point_of_sale/core/enums.dart';
 import 'package:point_of_sale/core/error/error.dart';
+import 'package:point_of_sale/core/styles/placeholders.dart';
 import 'package:point_of_sale/core/utils/utils.dart';
+import 'package:point_of_sale/core/widgets/button.dart';
 import 'package:point_of_sale/features/dashboard/presentation/builder_ids.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -227,7 +230,7 @@ class GenericCodeScanner<T> extends StatelessWidget {
                           top: 40.0,
                           child: IconButton(
                             icon: const Icon(
-                              AppIcons.iconRefresh,
+                              Icons.refresh_outlined,
                               color: Colors.white,
                             ),
                             onPressed: scannerController.resumeCamera,
@@ -250,7 +253,7 @@ class GenericCodeScanner<T> extends StatelessWidget {
                             width: 300.0,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: AppColors.primaryColor,
+                                color: Theme.of(context).colorScheme.primary,
                                 borderRadius: BorderRadius.circular(14.0)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -259,8 +262,7 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                   Icons.info_outline,
                                   color: Colors.white,
                                 ),
-                                AppPlaceHolders
-                                    .sizeHorizontalFieldSmallPlaceHolder,
+                                sizeHorizontalFieldSmallPlaceHolder,
                                 const Text(
                                   scanGuideText,
                                   style: TextStyle(color: Colors.white),
@@ -368,15 +370,13 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                                   CrossAxisAlignment.end,
                                               children: [
                                                 const Text(
-                                                  AppLiterals
-                                                      .codeValidatingText,
+                                                  codeValidatingText,
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
-                                                AppPlaceHolders
-                                                    .sizeHorizontalFieldMediumPlaceHolder,
+                                                sizeHorizontalFieldMediumPlaceHolder,
                                                 const SizedBox(
                                                     height: 20.0,
                                                     width: 20.0,
@@ -397,8 +397,7 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                                         color: Colors.white,
                                                         fontWeight:
                                                             FontWeight.bold)),
-                                                AppPlaceHolders
-                                                    .sizeHorizontalFieldMediumPlaceHolder,
+                                                sizeHorizontalFieldMediumPlaceHolder,
                                                 const CircleAvatar(
                                                     radius: 12.0,
                                                     backgroundColor:
@@ -421,8 +420,7 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                                       color: Colors.white,
                                                       fontWeight:
                                                           FontWeight.bold)),
-                                              AppPlaceHolders
-                                                  .sizeHorizontalFieldMediumPlaceHolder,
+                                              sizeHorizontalFieldMediumPlaceHolder,
                                               const CircleAvatar(
                                                   radius: 12.0,
                                                   backgroundColor: Colors.green,
@@ -438,8 +436,7 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold)),
-                                      AppPlaceHolders
-                                          .sizeFieldMediumPlaceHolder,
+                                      sizeFieldMediumPlaceHolder,
 
                                       if (scannerController.barCode == null)
                                         const SizedBox()
@@ -453,8 +450,7 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                               children: [
                                                 Expanded(
                                                   child: ButtonWidget(
-                                                      text: AppLiterals
-                                                          .readBarCodeButtonText,
+                                                      text: readBarCodeButtonText,
                                                       buttonType: ButtonType
                                                           .fill,
                                                       onPressed: () =>

@@ -1,1 +1,8 @@
-enum LoadingState { loading, loaded, error }
+enum LoadingState {
+  loading,
+  loaded,
+  error;
+
+  bool get isLoaded =>
+      this == LoadingState.loaded;
+}

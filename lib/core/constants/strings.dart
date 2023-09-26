@@ -1,3 +1,12 @@
-const defaultGeneralErrorTitle="Error Occured";
-const defaultGeneralErrorMessage="Some Error Occured";
-const emptyString="";
+const defaultGeneralErrorTitle = "Error Occured";
+const defaultGeneralErrorMessage = "Some Error Occured";
+const emptyString = "";
+const String scanValidButtonText = 'SCAN PRODUCT';
+const String scanInvalidButtonText = 'SCAN (ADD NEW PRODUCT))';
+const String scanGuideText = 'Place the code inside this box';
+const String codeInValidText = 'Code is InValid';
+const String codeScanningText = 'Searching for Code...';
+const String codeValidatingText = 'Validating Code...';
+const String codeValidText = 'Code is Valid';
+const String codeScannedText = 'Code Scanned';
+const String readBarCodeButtonText = 'READ BARCODE';
