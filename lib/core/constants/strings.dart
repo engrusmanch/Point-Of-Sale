@@ -10,3 +10,4 @@ const String codeValidatingText = 'Validating Code...';
 const String codeValidText = 'Code is Valid';
 const String codeScannedText = 'Code Scanned';
 const String readBarCodeButtonText = 'READ BARCODE';
+const searchForAnyProductLabel="Search for any product";

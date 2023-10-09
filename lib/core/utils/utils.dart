@@ -22,3 +22,7 @@ QrScannerOverlayShape qrScannerOverlayShape = QrScannerOverlayShape(
   cutOutHeight: 200.0,
   cutOutBottomOffset: 150.0,
 );
+
+extension price on String {
+  String get priceLabel => '${this} PKR';
+}

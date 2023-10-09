@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:point_of_sale/features/dashboard/data_source/repository/list_repo_impl.dart';
 import 'package:point_of_sale/features/dashboard/data_source/source/list_source.dart';
 import 'package:point_of_sale/features/dashboard/domain/repository/list_repo.dart';
-import 'package:point_of_sale/features/dashboard/presentation/get/dashboard_controller.dart';
+import 'package:point_of_sale/features/dashboard/presentation/controller/dashboard_controller.dart';
 
 initDashboard()async{
   Get.lazyPut<ProductListRepo>(
