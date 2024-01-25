@@ -15,4 +15,9 @@ class ProductListRepoImpl implements ProductListRepo{
     return await remoteDataSource.getSearchedProducts(searchQuery);
   }
 
+  @override
+  Future<Product?> getScannedProduct({String? barCode})async {
+    return await remoteDataSource.getScannedProduct(barCode: barCode);
+  }
+
 }

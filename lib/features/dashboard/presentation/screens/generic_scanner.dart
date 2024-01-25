@@ -336,7 +336,7 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                                   ButtonWidget(
                                                     text: "Done",
                                                     buttonType: ButtonType.fill,
-                                                    onPressed: () =>
+                                                    onPressed: ()async =>
                                                         Navigator.pop(context),
                                                   ),
                                               ])
@@ -453,11 +453,13 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                                       text: readBarCodeButtonText,
                                                       buttonType: ButtonType
                                                           .fill,
+
                                                       onPressed: () =>
                                                           scanBarCode!(
                                                               context,
                                                               scannerController
-                                                                  .barCode!)),
+                                                                  .barCode!),
+                                                  ),
                                                 ),
                                               ],
                                             )

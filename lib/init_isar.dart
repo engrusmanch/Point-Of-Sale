@@ -17,11 +17,11 @@ class IsarSingleton {
         File(path).createSync(recursive: true);
       }
 
-      _isarInstance = await Isar.open(
-        isarSchema,
-        directory: dir.path,
-
-      );
+      // _isarInstance = await Isar.open(
+      //   // isarSchema,
+      //   // directory: dir.path,
+      //
+      // );
     }
   }
 
@@ -35,7 +35,7 @@ class IsarSingleton {
 }
 
 final isarSchema = [
-  ProductSchema,
+  // ProductSchema,
   // Add other schemas here if needed.
 ];
 

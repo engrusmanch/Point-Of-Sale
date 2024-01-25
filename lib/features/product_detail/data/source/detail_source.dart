@@ -11,9 +11,9 @@ class ProductDetailDataSourceImpl implements ProductDetailDataSource{
   @override
   Future<Product> getProductDetail(int id)async {
     print("Id:===>$id");
-    final isar = IsarSingleton.isar;
-    final existingProduct = await isar.products.get(id);
-    return existingProduct!;
+    // final isar = IsarSingleton.isar;
+    // final existingProduct = await isar.products.get(id);
+    return Product(image: "",name: "");
   }
 
 }

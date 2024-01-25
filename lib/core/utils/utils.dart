@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import "dart:core";
 import 'package:flutter/material.dart';
 import 'package:point_of_sale/core/error/error.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';

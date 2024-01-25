@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:point_of_sale/core/constants/strings.dart';
 import 'package:point_of_sale/core/widgets/search_bar_c.dart';
 import 'package:point_of_sale/features/dashboard/presentation/controller/dashboard_controller.dart';
+import 'package:point_of_sale/features/dashboard/presentation/screens/generic_scanner.dart';
 import 'package:point_of_sale/features/navigationbar/presentation/controller/controller.dart';
 
 class MyNavigationBar extends StatelessWidget {
@@ -64,7 +65,7 @@ class MyNavigationBar extends StatelessWidget {
                   child: NavigationBar(
                     selectedIndex: navigationController.selectedIndex,
                     onDestinationSelected: navigationController.onItemTapped,
-                    destinations: const [
+                    destinations:  [
                       NavigationDestination(
                         icon: Icon(
                           Icons.home_outlined,
@@ -79,13 +80,29 @@ class MyNavigationBar extends StatelessWidget {
                         label: 'Categories',
                         selectedIcon: Icon(Icons.category),
                       ),
-                      NavigationDestination(
-                        icon: Icon(
-                          Icons.shopping_cart_outlined,
-                        ),
-                        label: 'Cart',
-                        selectedIcon: Icon(
-                          Icons.shopping_cart,
+                      InkWell(
+                        onTap: ()async{
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => GenericCodeScanner(
+                                    scanBarCode: dashboardController.scanBarCode,
+                                    scannerType: ScannerType.barCodeScanner,
+                                  )));
+                          Get.delete<CodeScannerController>();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).colorScheme.primary
+                          ),
+                          padding: EdgeInsets.only(bottom: 4),
+                          height: 70,
+                          width: 70,
+                          child: Icon(
+                              Icons.qr_code_scanner_outlined,
+                              size: 40,
+                            ),
                         ),
                       ),
                       NavigationDestination(
