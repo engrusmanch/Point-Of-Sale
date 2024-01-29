@@ -18,6 +18,8 @@ import 'package:point_of_sale/core/widgets/qr_button.dart';
 import 'package:point_of_sale/core/widgets/text_field.dart';
 import 'package:point_of_sale/features/add_edit_product/presentation/controller/add_update_controller.dart';
 import 'package:point_of_sale/features/dashboard/presentation/screens/generic_scanner.dart';
+import 'package:point_of_sale/mvvm/entities/brand.dart';
+import 'package:point_of_sale/mvvm/entities/category.dart';
 import 'package:point_of_sale/mvvm/pages/generic_form.dart';
 
 class AddEditProductPage extends StatelessWidget {
@@ -163,32 +165,32 @@ class AddEditProductPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            LabeledTextField(
+                            DropDownWidget<Category>(
                               label: "Category",
-                              fontSize: labelFontSize,
-                              textField: TextFormField(
-                                initialValue:
-                                    addUpdateProductController.category,
-                                onChanged:
-                                    addUpdateProductController.setCategory,
-                                validator: EmptyFieldValidator.validator,
-                                textInputAction: TextInputAction.next,
-                                decoration: const InputDecoration(
-                                    hintText: categoryHint),
-                              ),
+                             items: addUpdateProductController.listController.categoryModel,
+                              onChanged: addUpdateProductController.setCategory,
+                              value: addUpdateProductController.category,
+                              itemAsString: (Category category) => category.category ?? '',
                             ),
-                            LabeledTextField(
+                            DropDownWidget<Brand>(
                               label: "Brand",
-                              fontSize: labelFontSize,
-                              textField: TextFormField(
-                                initialValue: addUpdateProductController.brand,
-                                onChanged: addUpdateProductController.setBrand,
-                                validator: EmptyFieldValidator.validator,
-                                textInputAction: TextInputAction.next,
-                                decoration:
-                                    const InputDecoration(hintText: brandHint),
-                              ),
+                              itemAsString: (Brand brand)=>brand.brand??'',
+                              items: addUpdateProductController.listController.brandModel,
+                              onChanged: addUpdateProductController.setBrand,
+                              value: addUpdateProductController.brand,
                             ),
+                            // LabeledTextField(
+                            //   label: "Brand",
+                            //   fontSize: labelFontSize,
+                            //   textField: TextFormField(
+                            //     initialValue: addUpdateProductController.brand,
+                            //     onChanged: addUpdateProductController.setBrand,
+                            //     validator: EmptyFieldValidator.validator,
+                            //     textInputAction: TextInputAction.next,
+                            //     decoration:
+                            //         const InputDecoration(hintText: brandHint),
+                            //   ),
+                            // ),
                             SizedBox(
                               width: AppStyles.widgetWidth,
                               child: Row(

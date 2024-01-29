@@ -14,7 +14,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<DashboardController>(builder: (dashboardController) {
       return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterFloat,
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.miniCenterFloat,
         floatingActionButton: FloatingActionButton.extended(
           icon: Icon(Icons.add),
           label: Text("Add Product"),
@@ -25,18 +26,23 @@ class HomeScreen extends StatelessWidget {
           },
         ),
         body: (dashboardController.listLoadingState.isLoaded)
-            ? ListView(children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: CustomGridViewSeparated(
-                      itemCount: dashboardController.productList.length,
-                      itemBuilder: (context, index) => ProductCard(
-
-                        index: index,
-                          product: dashboardController.productList[index]),
-                    )),
-                    SizedBox(height: 50,)
-              ])
+            ? RefreshIndicator(
+                onRefresh: () async =>
+                    await dashboardController.getProductsList(),
+                child: ListView(children: [
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: CustomGridViewSeparated(
+                        itemCount: dashboardController.productList.length,
+                        itemBuilder: (context, index) => ProductCard(
+                            index: index,
+                            product: dashboardController.productList[index]),
+                      )),
+                  SizedBox(
+                    height: 50,
+                  )
+                ]),
+              )
             : Center(
                 child: CircularProgressIndicator(),
               ),

@@ -18,6 +18,7 @@ class DropDownWidget<T> extends StatefulWidget {
     this.label,
     this.labelFontSize,
     this.margin,
+    this.itemAsString,
     this.validate = false,
     this.popupType = PopupType.dialog,
     this.showSearchField = true,
@@ -39,6 +40,7 @@ class DropDownWidget<T> extends StatefulWidget {
   final bool isFilterOnline;
   final bool? smallDropdown;
   final bool enabled;
+  final String Function(T)? itemAsString;
   @override
   State<DropDownWidget<T>> createState() => _DropDownWidgetState<T>();
 }
@@ -91,6 +93,7 @@ class _DropDownWidgetState<T> extends State<DropDownWidget<T>> {
                                   overflow: TextOverflow.ellipsis),
                         )),
                 child: DropdownSearch<T>(
+                  itemAsString: widget.itemAsString,
                   enabled: widget.enabled,
                   clearButtonProps: const ClearButtonProps(
                     isVisible: true

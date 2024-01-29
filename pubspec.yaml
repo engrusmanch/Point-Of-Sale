@@ -59,6 +59,7 @@ dependencies:
   dio: ^5.4.0
   storage_client: ^2.0.0
   path: ^1.8.3
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

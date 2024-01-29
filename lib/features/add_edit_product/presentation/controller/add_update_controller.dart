@@ -12,6 +12,8 @@ import 'package:point_of_sale/features/dashboard/domain/entity/product.dart';
 import 'package:point_of_sale/features/dashboard/presentation/controller/dashboard_controller.dart';
 import 'package:point_of_sale/features/dashboard/presentation/screens/generic_scanner.dart';
 import 'package:point_of_sale/main.dart';
+import 'package:point_of_sale/mvvm/entities/brand.dart';
+import 'package:point_of_sale/mvvm/entities/category.dart';
 import 'package:point_of_sale/mvvm/entities/image_data.dart';
 import 'package:point_of_sale/mvvm/repos/image_repo.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -112,14 +114,25 @@ class AddUpdateProductController extends GetxController {
   bool get isProductSelected => idSelectedProduct != null;
 
   String? productName;
-  String? category;
-  String? brand;
+  Category category = Category.empty();
+  Brand brand = Brand.empty();
+  int? brandId;
+  int? categoryId;
   setCategory(newCategory) {
-    category = newCategory;
+    category = newCategory ?? Category.empty();
+    print('category $category');
+    // listController.setCategory(category);
+    // categoryId = listController.categoryModel
+    //     .firstWhereOrNull((element) => element.category == category)
+    //     ?.id;
   }
 
   setBrand(newBrand) {
-    brand = newBrand;
+    brand = newBrand ?? Brand.empty();
+    // listController.setBrand(brand);
+    // brandId = listController.brandModel
+    //     .firstWhereOrNull((element) => element.brand == brand)
+    //     ?.id;
   }
 
   // String? productDescription;
@@ -165,7 +178,8 @@ class AddUpdateProductController extends GetxController {
 
   ///Function to search the Product through bar code scanner
   Future<Product> searchProduct(String searchBarCode) async {
-    final searched = await _dashboardController.searchProduct(searchBarCode);
+    final searched =
+        await _dashboardController.searchProduct(query: searchBarCode);
     return searched;
   }
 
@@ -268,8 +282,8 @@ class AddUpdateProductController extends GetxController {
     availableQty = listController.productList[index].availableQty;
     soldQty = listController.productList[index].soldQty;
     imageUrl = listController.productList[index].image;
-    category = listController.productList[index].category;
-    brand = listController.productList[index].supplier;
+    category = listController.productList[index].category ?? Category.empty();
+    brand = listController.productList[index].supplier ?? Brand.empty();
     barCode = listController.productList[index].barcode;
     productLoadingState = LoadingState.loaded;
     update();
@@ -308,8 +322,8 @@ class AddUpdateProductController extends GetxController {
 
   createInventory(BuildContext context) async {
     if (image.file == null) {
-      createOrUpdateProductLoadingState=LoadingState.loaded;
-       showDialog(
+      createOrUpdateProductLoadingState = LoadingState.loaded;
+      showDialog(
           context: context,
           builder: (context) => AlertDialog(
                 title: Text("Image Error"),
@@ -343,40 +357,47 @@ class AddUpdateProductController extends GetxController {
       //     .upload('images/${DateTime.now().millisecondsSinceEpoch}.png',
       //         newImageFile);
 
-      imageUrl = await client!.from('product_images').getPublicUrl("$imageName");
+      imageUrl =
+          await client!.from('product_images').getPublicUrl("$imageName");
       print('download url : $imageUrl');
     }
 
     final newProduct = Product(
-      name: productName ?? "",
-      description: description,
-      imageReference: imageReference,
-      barcode: barCode,
-      costPrice: costPrice,
-      salePrice: salePrice,
-      tax: saleTax,
-      category: category,
-      supplier: brand,
-      image: imageUrl ?? "",
-      availableQty: availableQty,
-      soldQty: soldQty,
-      // qtyMax: selectedEntity!.qtyMax,
-    );
+        name: productName ?? "",
+        description: description,
+        imageReference: imageReference,
+        barcode: barCode,
+        costPrice: costPrice,
+        salePrice: salePrice,
+        tax: saleTax,
+        category: category,
+        supplier: brand,
+        image: imageUrl ?? "",
+        availableQty: availableQty,
+        soldQty: soldQty,
+        categoryId: category.id,
+        brandId: brand.id
+        // qtyMax: selectedEntity!.qtyMax,
+        );
 
-    await addUpdateRepo.addProduct(newProduct).then((value) {
+    await addUpdateRepo.addProduct(newProduct).then((value)async {
       // image.url =
       //     '${AppUrls.imageUrl}${ImageType.product.model}${AppUrls.imageIdQuery}$value${AppUrls.productImageFieldQuery}';
       // final createdProduct = newProduct.copyWith(productId: value);
-      listController.productList.add(value);
+      // listController.productList.add(value);
+      //
+      // listController.updateProduct();
+      // update();
+      if (context.mounted) {
+        Navigator.pop(context);
+        await listController.getProductsList();
+      }
 
-      listController.updateProduct();
-      update();
-
-      Navigator.pop(context);
       createOrUpdateProductLoadingState = LoadingState.loaded;
 
       update();
     });
+
   }
 
   updateProduct(BuildContext context) async {
@@ -396,21 +417,23 @@ class AddUpdateProductController extends GetxController {
     }
 
     final updatedProduct = Product(
-      id: idSelectedProduct,
-      name: productName ?? "",
-      imageReference: imageReference,
-      description: description,
-      barcode: barCode,
-      costPrice: costPrice,
-      salePrice: salePrice,
-      tax: saleTax,
-      category: category,
-      supplier: brand,
-      image: imageUrl ?? "",
-      availableQty: availableQty,
-      soldQty: soldQty,
-      // qtyMax: selectedEntity!.qtyMax,
-    );
+        id: idSelectedProduct,
+        name: productName ?? "",
+        imageReference: imageReference,
+        description: description,
+        barcode: barCode,
+        costPrice: costPrice,
+        salePrice: salePrice,
+        tax: saleTax,
+        category: category,
+        supplier: brand,
+        image: imageUrl ?? "",
+        availableQty: availableQty,
+        soldQty: soldQty,
+        categoryId: categoryId,
+        brandId: brandId
+        // qtyMax: selectedEntity!.qtyMax,
+        );
 
     await addUpdateRepo.updateProduct(updatedProduct).then((value) {
       int index = listController.productList

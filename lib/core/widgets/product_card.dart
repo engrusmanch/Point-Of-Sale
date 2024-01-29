@@ -85,6 +85,8 @@ class ProductCard extends StatelessWidget {
             right: 20,
             // bottom: 90,
             child: Container(
+              // height: MediaQuery.of(context).size.height * 0.1,
+              // width: MediaQuery.of(context).size.width * 0.3,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
                   // shape: BoxShape.circle,
@@ -103,8 +105,8 @@ class ProductCard extends StatelessWidget {
                       product.image.isEmpty
                           ? "https://media.istockphoto.com/id/1324356458/vector/picture-icon-photo-frame-symbol-landscape-sign-photograph-gallery-logo-web-interface-and.jpg?s=612x612&w=0&k=20&c=ZmXO4mSgNDPzDRX-F8OKCfmMqqHpqMV6jiNi00Ye7rE="
                           : product.image,
-                      height: 100,
-                      width: 130,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.width * 0.8,
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) {
                           return child;
@@ -115,7 +117,7 @@ class ProductCard extends StatelessWidget {
                         }
                       },
                       // height: .0,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                     ),
                     Positioned(
                       top: 4,

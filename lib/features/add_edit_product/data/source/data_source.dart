@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:point_of_sale/core/constants/strings.dart';
 import 'package:point_of_sale/features/dashboard/domain/entity/product.dart';
 import 'package:point_of_sale/init_isar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,11 +26,13 @@ class AddUpdateProductSourceImpl implements AddUpdateProductSource {
           "tax": newProduct.tax,
           "available_qty": newProduct.availableQty,
           "sold_qty": newProduct.soldQty,
-          "category": newProduct.category,
-          "supplier": newProduct.supplier,
+          "category": newProduct.category?.category,
+          "supplier": newProduct.supplier?.brand,
           "barcode": newProduct.barcode,
           "product_image": newProduct.image,
-          "image_reference":newProduct.imageReference
+          "image_reference":newProduct.imageReference,
+          "brand_id":newProduct.brandId,
+          'category_id':newProduct.categoryId,
         },
       ]).select();
       print("Add product list${updatedProduct}");
@@ -60,10 +63,12 @@ class AddUpdateProductSourceImpl implements AddUpdateProductSource {
         "tax": updatedProduct.tax,
         "available_qty": updatedProduct.availableQty,
         "sold_qty": updatedProduct.soldQty,
-        "category": updatedProduct.category,
-        "supplier": updatedProduct.supplier,
+        "category": updatedProduct.category?.category,
+        "supplier": updatedProduct.supplier?.brand,
         "barcode": updatedProduct.barcode,
         "product_image": updatedProduct.image,
+        "brand_id":updatedProduct.brandId,
+        'category_id':updatedProduct.categoryId,
       })
           .eq('id', updatedProduct.id!) // Assuming 'product_id' is your primary key
           .select();

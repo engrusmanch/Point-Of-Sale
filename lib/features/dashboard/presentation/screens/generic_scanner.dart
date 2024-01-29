@@ -450,12 +450,13 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                               children: [
                                                 Expanded(
                                                   child: ButtonWidget(
+                                                    key: UniqueKey(),
                                                       text: readBarCodeButtonText,
                                                       buttonType: ButtonType
                                                           .fill,
 
-                                                      onPressed: () =>
-                                                          scanBarCode!(
+                                                      onPressed: ()async =>
+                                                         await scanBarCode!(
                                                               context,
                                                               scannerController
                                                                   .barCode!),
@@ -470,10 +471,11 @@ class GenericCodeScanner<T> extends StatelessWidget {
                                             children: [
                                               Expanded(
                                                 child: ButtonWidget(
+                                                  key: UniqueKey(),
                                                     text: textScanIfValid,
                                                     buttonType: ButtonType.fill,
-                                                    onPressed: () =>
-                                                        scanIfValid!(
+                                                    onPressed: ()async =>
+                                                       await scanIfValid!(
                                                             context,
                                                             scannerController
                                                                 .scannedEntity)),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,13 +8,19 @@ import 'package:path_provider/path_provider.dart';
 import 'package:point_of_sale/core/error/error.dart';
 import 'package:point_of_sale/features/dashboard/domain/entity/product.dart';
 import 'package:point_of_sale/init_isar.dart';
-import 'package:point_of_sale/main.dart';
+import 'package:point_of_sale/mvvm/entities/brand.dart';
+import 'package:point_of_sale/mvvm/entities/category.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class ProductListDataSource {
   Future<List<Product>> getProductsList();
-  Future<List<Product>> getSearchedProducts(String searchQuery);
+  Future<List<Product>> getSearchedProducts(
+      {required String searchQuery,
+      required String category,
+      required String brand});
   Future<Product?> getScannedProduct({String? barCode});
+  Future<List<Category>> getCategories();
+  Future<List<Brand>> getBrands();
 }
 
 class ProductListDataSourceImpl implements ProductListDataSource {
@@ -405,7 +412,8 @@ class ProductListDataSourceImpl implements ProductListDataSource {
           }
         }
       }
-      print("List Products:${productsResponse.map<Product>((e) => Product.fromJson(e)).toList()}");
+      print(
+          "List Products:${productsResponse.map<Product>((e) => Product.fromJson(e)).toList()}");
       return productsResponse.map<Product>((e) => Product.fromJson(e)).toList();
     } catch (error) {
       throw Exception('Error during HTTP request: $error');
@@ -417,12 +425,72 @@ class ProductListDataSourceImpl implements ProductListDataSource {
   }
 
   @override
-  Future<List<Product>> getSearchedProducts(String searchQuery) async {
-    // TODO: implement getSearchedProducts
-    print(searchQuery);
-    final isar = IsarSingleton.isar;
-    final List<String> queryWords = Isar.splitWords(searchQuery);
-    print(queryWords);
+  Future<List<Product>> getSearchedProducts(
+      {required String searchQuery,
+      required String category,
+      required String brand}) async {
+    final supabase = Supabase.instance.client;
+    List searchedProducts = [];
+    log('Filter Params $category,$brand,$searchQuery');
+    if (category.isNotEmpty && brand.isEmpty && searchQuery.isEmpty) {
+      final response =
+          await supabase.from("products").select('*').eq('category', category);
+      searchedProducts.addAll(response);
+    }
+    if (category.isEmpty && brand.isNotEmpty && searchQuery.isEmpty) {
+      final response =
+          await supabase.from("products").select('*').eq('supplier', brand);
+      searchedProducts.addAll(response);
+    }
+    if (searchQuery.isNotEmpty && brand.isEmpty && category.isEmpty) {
+      final response = await supabase
+          .from("products")
+          .select('*')
+          .ilike('name', '%$searchQuery%');
+      searchedProducts.addAll(response);
+    }
+    if (brand.isNotEmpty && category.isNotEmpty && searchQuery.isEmpty) {
+      final response = await supabase
+          .from("products")
+          .select('*')
+          .eq('supplier', brand)
+          .eq('category', category);
+      searchedProducts.addAll(response);
+    }
+    if (searchQuery.isNotEmpty && brand.isNotEmpty && category.isNotEmpty) {
+      final response = await supabase
+          .from("products")
+          .select('*')
+          .ilike('name', '%$searchQuery%')
+          .eq('category', category)
+          .eq('supplier', brand);
+      searchedProducts.addAll(response);
+    }
+
+    if (category.isNotEmpty && brand.isEmpty && searchQuery.isNotEmpty) {
+      final response = await supabase
+          .from("products")
+          .select('*')
+          .eq('category', category)
+          .ilike('name', '%$searchQuery%');
+      searchedProducts.addAll(response);
+    }
+    if (brand.isNotEmpty && category.isEmpty && searchQuery.isNotEmpty) {
+      final response = await supabase
+          .from("products")
+          .select('*')
+          .eq('supplier', brand)
+          .ilike('name', '%$searchQuery%');
+      searchedProducts.addAll(response);
+    }
+
+    if (category.isEmpty && brand.isEmpty && searchQuery.isEmpty) {
+      final response = await supabase.from("products").select('*');
+      searchedProducts.addAll(response);
+    }
+    searchedProducts = searchedProducts.toSet().toList();
+    return searchedProducts.map<Product>((e) => Product.fromJson(e)).toList();
+
     // final products = await isar.products
     //     .where()
     //     .titleWordsElementStartsWith(searchQuery)
@@ -433,12 +501,43 @@ class ProductListDataSourceImpl implements ProductListDataSource {
 
   @override
   Future<Product?> getScannedProduct({String? barCode}) async {
-    final isar = IsarSingleton.isar;
-    final List<String> queryWords = Isar.splitWords(barCode!);
+    final supabase = Supabase.instance.client;
+    Product? searchedProduct;
+    if (barCode != null) {
+      final response =
+          await supabase.from("products").select('*').eq('barcode', barCode);
+      final searchedProducts =
+          response.map((e) => Product.fromJson(e)).toList();
+      if (searchedProducts.isNotEmpty) {
+        searchedProduct = searchedProducts[0];
+        return searchedProduct;
+      } else {
+        return null;
+      }
+    }
     // final product =
     //     await isar.products.where().barCodeEqualTo(queryWords).findFirst();
 
     return null;
+  }
+
+  @override
+  Future<List<Brand>> getBrands() async {
+    final supabase = Supabase.instance.client;
+    final brands = await supabase.from('brands').select("*");
+
+    print('Brands ${brands.map<Brand>((e) => Brand.fromJson(e)).toList()}');
+    return brands.map<Brand>((e) => Brand.fromJson(e)).toList();
+  }
+
+  @override
+  Future<List<Category>> getCategories() async {
+    final supabase = Supabase.instance.client;
+    final categories = await supabase.from('categories').select("*");
+    print(
+        'Categories ${categories.map<Category>((e) => Category.fromJson(e)).toList()}');
+
+    return categories.map<Category>((e) => Category.fromJson(e)).toList();
   }
 }
 

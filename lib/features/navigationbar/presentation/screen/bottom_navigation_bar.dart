@@ -1,10 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:point_of_sale/core/constants/strings.dart';
 import 'package:point_of_sale/core/widgets/search_bar_c.dart';
+import 'package:point_of_sale/features/dashboard/domain/entity/product.dart';
 import 'package:point_of_sale/features/dashboard/presentation/controller/dashboard_controller.dart';
 import 'package:point_of_sale/features/dashboard/presentation/screens/generic_scanner.dart';
+import 'package:point_of_sale/features/dashboard/presentation/screens/product_filters.dart';
 import 'package:point_of_sale/features/navigationbar/presentation/controller/controller.dart';
 
 class MyNavigationBar extends StatelessWidget {
@@ -15,7 +16,7 @@ class MyNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DashboardController dashboardController=Get.find();
+    final DashboardController dashboardController = Get.find();
     return GetBuilder<NavigationController>(
         init: NavigationController(dynamicTabIndex: dynamicTab),
         builder: (navigationController) {
@@ -38,11 +39,23 @@ class MyNavigationBar extends StatelessWidget {
                               Icons.notifications_outlined,
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ProductFiltersPage()));
+                            },
+                            icon: (!dashboardController.filtersApplied)?Icon(
+                              Icons.filter_alt_outlined,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ):Icon(
+                              Icons.filter_alt_off_outlined,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           )
                         ],
                         centerTitle: true,
                         backgroundColor: Theme.of(context).colorScheme.surface,
-
                         title: SearchFieldWithOptions(
                           onTap: () {
                             // Navigator.of(context).push(MaterialPageRoute(
@@ -50,9 +63,10 @@ class MyNavigationBar extends StatelessWidget {
                           },
                           hintText: searchForAnyProductLabel,
                           searchFieldType: SearchFieldType.appBar,
-                          onChanged: dashboardController.searchProduct,
+                          onChanged: (query) =>
+                              dashboardController.searchProduct(query: query),
                         ),
-                ),
+                      ),
                 body: Center(
                   child: navigationController.widgetOptions
                       .elementAt(navigationController.selectedIndex),
@@ -65,7 +79,7 @@ class MyNavigationBar extends StatelessWidget {
                   child: NavigationBar(
                     selectedIndex: navigationController.selectedIndex,
                     onDestinationSelected: navigationController.onItemTapped,
-                    destinations:  [
+                    destinations: [
                       NavigationDestination(
                         icon: Icon(
                           Icons.home_outlined,
@@ -81,28 +95,36 @@ class MyNavigationBar extends StatelessWidget {
                         selectedIcon: Icon(Icons.category),
                       ),
                       InkWell(
-                        onTap: ()async{
+                        onTap: () async {
+                          // Get.put(CodeScannerController<Product?>());
                           await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => GenericCodeScanner(
-                                    scanBarCode: dashboardController.scanBarCode,
-                                    scannerType: ScannerType.barCodeScanner,
-                                  )));
-                          Get.delete<CodeScannerController>();
+                                  builder: (_) => GenericCodeScanner<Product?>(
+
+                                        scannerType: ScannerType.entityScanner,
+                                        searchEntity:
+                                            dashboardController.searchEntity,
+                                        scanIfInValid: dashboardController
+                                            .scanIfInvalid,
+                                        scanIfValid:
+                                            (context, scannedProduct) =>
+                                                dashboardController.scanIfValid(
+                                                    context, scannedProduct),
+                                      )));
+                          Get.delete<CodeScannerController<Product?>>();
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context).colorScheme.primary
-                          ),
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).colorScheme.primary),
                           padding: EdgeInsets.only(bottom: 4),
                           height: 70,
                           width: 70,
                           child: Icon(
-                              Icons.qr_code_scanner_outlined,
-                              size: 40,
-                            ),
+                            Icons.qr_code_scanner_outlined,
+                            size: 40,
+                          ),
                         ),
                       ),
                       NavigationDestination(
@@ -124,11 +146,7 @@ class MyNavigationBar extends StatelessWidget {
                     ],
                   ),
                 ),
-              )
-
-
-              );
+              ));
         });
-
   }
 }
